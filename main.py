@@ -17,7 +17,8 @@ TYPES_ID = {
     "ドラゴン": 14,
     "あく": 15,
     "はがね": 16,
-    "フェアリー": 17
+    "フェアリー": 17,
+    # "すべて等倍": 404
 }
 
 DOUBLE_ATK2DEF = {
@@ -39,6 +40,7 @@ DOUBLE_ATK2DEF = {
     15: [10, 13], # あく
     16: [5, 12, 17], # はがね
     17: [6, 14, 15], # フェアリー
+    404: []
 }
 
 HALF_ATK2DEF = {
@@ -60,6 +62,7 @@ HALF_ATK2DEF = {
     15: [13, 15], # あく
     16: [0, 4, 5, 9, 10, 11, 12, 14, 16, 17], # はがね
     17: [6, 11, 15], # フェアリー
+    404: []
 }
 
 ZERO_ATK2DEF = {
@@ -81,12 +84,17 @@ ZERO_ATK2DEF = {
     15: [], # あく
     16: [], # はがね
     17: [], # フェアリー
+    404: []
 }
 
-def isExistTypes(typeName):
-    return typeName in TYPES_ID
 
-def checkTypeCon(atkTypeID, defTypeID):
+def isExistTypes(typeName, isAllowVoid):
+    if(isAllowVoid):
+        return (typeName in TYPES_ID) or (typeName == "")
+    else:
+        return typeName in TYPES_ID
+
+def checkSingleTypeCon(atkTypeID: int, defTypeID: int):
     if(defTypeID in DOUBLE_ATK2DEF[atkTypeID]):
         return 2
     elif(defTypeID in HALF_ATK2DEF[atkTypeID]):
@@ -95,29 +103,35 @@ def checkTypeCon(atkTypeID, defTypeID):
         return 0
     else:
         return 1
-        
 
-
-
+def checkMultiTypeCon(atkTypeID: int, defTypeID1: int, defTypeID2: int):
+    return checkSingleTypeCon(atkTypeID, defTypeID1) * checkSingleTypeCon(atkTypeID, defTypeID2)
+    
 
 def main():
     atkType = input("こうげきわざのタイプ：")
-    if(not isExistTypes(atkType)):
+    if(not isExistTypes(atkType, False)):
         print("そのタイプは　そんざいしないみたいだ...")
         return
         
-    defType = input("こうげきをうけるポケモンのタイプ：")
-    if(not isExistTypes(defType)):
+    defType1 = input("こうげきをうけるポケモンのタイプ１：")
+    if(not isExistTypes(defType1, False)):
+        print("そのタイプは　そんざいしないみたいだ...")
+        return
+    
+    defType2 = input("こうげきをうけるポケモンのタイプ２（単タイプの場合はEnter）：")
+    if(not isExistTypes(defType2, True)):
         print("そのタイプは　そんざいしないみたいだ...")
         return
     
     atkTypeID = TYPES_ID[atkType]
-    defTypeID = TYPES_ID[defType]
-    mag = checkTypeCon(atkTypeID, defTypeID)
+    defTypeID1 = TYPES_ID[defType1]
+    defTypeID2 = TYPES_ID[defType2] if defType2 != "" else 404
+    mag = checkMultiTypeCon(atkTypeID, defTypeID1, defTypeID2)
     
     if(mag == 0):
         print("こうかは　ないようだ...")
-    elif(mag == 0.5):
+    elif(mag in (0.25, 0.5)):
         print("こうかは　いまひとつだ...")
     elif(mag == 1):
         print("こうかは　ふつうだ！")
