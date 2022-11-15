@@ -1,37 +1,51 @@
+# ID
+TYPES_ID = {
+    "ノーマル": 0,
+    "ほのお": 1,
+    "みず": 2,
+    "でんき": 3,
+    "くさ": 4,
+    "こおり": 5,
+    "かくとう": 6,
+    "どく": 7,
+    "じめん": 8,
+    "ひこう": 9,
+    "エスパー": 10,
+    "むし": 11,
+    "いわ": 12,
+    "ゴースト": 13,
+    "ドラゴン": 14,
+    "あく": 15,
+    "はがね": 16,
+    "フェアリー": 17,
+    # "すべて等倍": 404
+}
+
 class Type(object):
     def __init__(self,
+                 id,
                  name,
-                 atkSuperEffectiveTypes,
-                 atkNotVeryEffectiveTypes,
-                 atkNoEffectiveTypes,
-                 defSuperEffectiveTypes,
-                 defNotVeryEffectiveTypes,
-                 defNoEffectiveTypes):
+                 atkDoubleTypes,
+                 atkHalfTypes,
+                 atkZeroTypes,
+                 defDoubleTypes,
+                 defHalfTypes,
+                 defZeroTypes):
+        self.id = id
         self.name = name
-        self.__atkSuperEffectiveTypes = atkSuperEffectiveTypes
-        self.__atkNotVeryEffectiveTypes = atkNotVeryEffectiveTypes
-        self.__atkNoEffectiveTypes = atkNoEffectiveTypes
-        self.__defSuperEffectiveTypes = defSuperEffectiveTypes
-        self.__defNotVeryEffectiveTypes = defNotVeryEffectiveTypes
-        self.__defNoEffectiveTypes = defNoEffectiveTypes
-
-    def isAtkSuperEffectiveTypes(type):
-        return Type.__atkSuperEffectiveTypes.contains(type)
+        self.atkDoubleTypes = atkDoubleTypes
+        self.atkHalfTypes = atkHalfTypes
+        self.atkZeroTypes = atkZeroTypes
+        self.defDoubleTypes = defDoubleTypes
+        self.defHalfTypes = defHalfTypes
+        self.defZeroTypes = defZeroTypes
         
-    def isAtkNotVeryEffectiveTypes(type):
-        return Type.__atkNotVeryEffectiveTypes.contains(type)
-        
-    def isAtkNoEffectiveTypes(type):
-        return Type.__atkNoEffectiveTypes.contains(type)
-        
-    def isDefSuperEffectiveTypes(type):
-        return Type.__defSuperEffectiveTypes.contains(type)
-        
-    def isDefNotVeryEffectiveTypes(type):
-        return Type.__defNotVeryEffectiveTypes.contains(type)
-        
-    def isDefNoEffectiveTypes(type):
-        return Type.__defNoEffectiveTypes.contains(type)
-        
-        
-    
+    def checkDefMag(self, atkTypeId: int):
+        if(atkTypeId in self.defDoubleTypes):
+            return 2
+        elif(atkTypeId in self.defHalfTypes):
+            return 0.5
+        elif(atkTypeId in self.atkZeroTypes):
+            return 0
+        else:
+            return 1
